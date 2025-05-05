@@ -15,19 +15,52 @@ import {
 } from "@material-tailwind/react";
 
 function Login() {
-  const [loginMethod, setLoginMethod] = useState<"username" | "uniqueId">(
-    "username"
+  const [loginMethod, setLoginMethod] = useState<"emailOrPhone" | "uniqueId">(
+    "emailOrPhone"
   );
   const [formData, setFormData] = useState({
-    username: "",
+    emailOrPhone: "",
     uniqueId: "",
     password: "",
   });
+  const [label, setLabel] = useState("Email or Phone"); // Dynamic label
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Logic to determine if input is email or phone number
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    const isPhone = /^[0-9]{10}$/.test(value);
+
+    if (isEmail) {
+      setLabel("Email");
+    } else if (isPhone) {
+      setLabel("Phone");
+    } else {
+      setLabel("Email or Phone");
+    }
+
+    setFormData({ ...formData, emailOrPhone: value });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Final validation logic
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailOrPhone);
+    const isPhone = /^[0-9]{10}$/.test(formData.emailOrPhone);
+
+    if (isEmail || isPhone) {
+      console.log(
+        `Logging in with ${isEmail ? "email" : "phone number"}: ${
+          formData.emailOrPhone
+        }`
+      );
+    } else {
+      console.error("Invalid email or phone number format");
+    }
+
     // TODO: Implement login logic
-    console.log("Login attempt:", formData);
   };
 
   return (
@@ -63,11 +96,13 @@ function Login() {
                 }}
               >
                 <Tab
-                  value="username"
-                  onClick={() => setLoginMethod("username")}
-                  className={loginMethod === "username" ? "text-blue-500" : ""}
+                  value="emailOrPhone"
+                  onClick={() => setLoginMethod("emailOrPhone")}
+                  className={
+                    loginMethod === "emailOrPhone" ? "text-blue-500" : ""
+                  }
                 >
-                  Username
+                  Email/Phone
                 </Tab>
                 <Tab
                   value="uniqueId"
@@ -78,16 +113,14 @@ function Login() {
                 </Tab>
               </TabsHeader>
               <TabsBody>
-                <TabPanel value="username">
+                <TabPanel value="emailOrPhone">
                   <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="space-y-4">
                       <Input
                         type="text"
-                        label="Username"
-                        value={formData.username}
-                        onChange={(e) =>
-                          setFormData({ ...formData, username: e.target.value })
-                        }
+                        label={label} // Dynamic label
+                        value={formData.emailOrPhone}
+                        onChange={handleInputChange}
                         required
                       />
                       <Input
