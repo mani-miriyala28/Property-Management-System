@@ -15,7 +15,7 @@ import {
   ClipboardDocumentCheckIcon,
   ShieldCheckIcon,
   BuildingOffice2Icon,
-} from "@heroicons/react/24/solid"; // Import icons
+} from "@heroicons/react/24/solid";
 
 type UserType = "tenant" | "supervisor" | "landlord";
 
@@ -31,8 +31,40 @@ function Signup() {
     confirmPassword: "",
     otp: "",
   });
+  const [errors, setErrors] = useState({
+    firstName: false,
+    lastName: false,
+    mobile: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+    otp: false,
+  });
+
+  const validateStep1 = () => {
+    const newErrors = {
+      firstName: formData.firstName.trim() === "",
+      lastName: formData.lastName.trim() === "",
+      mobile: !/^[0-9]{10}$/.test(formData.mobile),
+      email: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email),
+      password: formData.password.trim() === "",
+      confirmPassword: formData.confirmPassword !== formData.password,
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error);
+  };
+
+  const validateStep3 = () => {
+    const newErrors = {
+      otp: formData.otp.trim() === "",
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error);
+  };
 
   const handleNext = () => {
+    if (activeStep === 0 && !validateStep1()) return;
+    if (activeStep === 2 && !validateStep3()) return;
     setActiveStep((prev) => prev + 1);
   };
 
@@ -46,6 +78,7 @@ function Signup() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateStep3()) return;
     console.log("Form Data:", formData, "User Type:", userType);
     // TODO: Implement form submission logic
   };
@@ -55,6 +88,7 @@ function Signup() {
     { label: "Select Role", icon: UserIcon },
     { label: "Verify OTP", icon: ShieldCheckIcon },
   ];
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -109,6 +143,7 @@ function Signup() {
                     type="text"
                     label="First Name"
                     value={formData.firstName}
+                    error={errors.firstName}
                     onChange={(e) =>
                       setFormData({ ...formData, firstName: e.target.value })
                     }
@@ -118,6 +153,7 @@ function Signup() {
                     type="text"
                     label="Last Name"
                     value={formData.lastName}
+                    error={errors.lastName}
                     onChange={(e) =>
                       setFormData({ ...formData, lastName: e.target.value })
                     }
@@ -127,6 +163,7 @@ function Signup() {
                     type="tel"
                     label="Mobile Number"
                     value={formData.mobile}
+                    error={errors.mobile}
                     onChange={(e) =>
                       setFormData({ ...formData, mobile: e.target.value })
                     }
@@ -136,6 +173,7 @@ function Signup() {
                     type="email"
                     label="Email"
                     value={formData.email}
+                    error={errors.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
@@ -145,6 +183,7 @@ function Signup() {
                     type="password"
                     label="Password"
                     value={formData.password}
+                    error={errors.password}
                     onChange={(e) =>
                       setFormData({ ...formData, password: e.target.value })
                     }
@@ -154,6 +193,7 @@ function Signup() {
                     type="password"
                     label="Confirm Password"
                     value={formData.confirmPassword}
+                    error={errors.confirmPassword}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -246,6 +286,7 @@ function Signup() {
                     type="text"
                     label="Enter OTP"
                     value={formData.otp}
+                    error={errors.otp}
                     onChange={(e) =>
                       setFormData({ ...formData, otp: e.target.value })
                     }
