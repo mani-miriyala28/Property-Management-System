@@ -7,13 +7,20 @@ import {
   Button,
   Input,
   Radio,
+  Stepper,
+  Step,
 } from "@material-tailwind/react";
-import { BuildingOffice2Icon } from "@heroicons/react/24/solid";
+import {
+  UserIcon,
+  ClipboardDocumentCheckIcon,
+  ShieldCheckIcon,
+  BuildingOffice2Icon,
+} from "@heroicons/react/24/solid"; // Import icons
 
 type UserType = "tenant" | "supervisor" | "landlord";
 
 function Signup() {
-  const [step, setStep] = useState<"userType" | "details" | "otp">("userType");
+  const [activeStep, setActiveStep] = useState(0); // Stepper state
   const [userType, setUserType] = useState<UserType | null>(null);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -25,35 +32,29 @@ function Signup() {
     otp: "",
   });
 
+  const handleNext = () => {
+    setActiveStep((prev) => prev + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prev) => prev - 1);
+  };
+
   const handleUserTypeSelect = (type: UserType) => {
     setUserType(type);
-    setStep("details");
   };
 
-  const handleDetailsSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Pending: Implement OTP sending logic
-    setStep("otp");
+    console.log("Form Data:", formData, "User Type:", userType);
+    // TODO: Implement form submission logic
   };
 
-  const handleOTPSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Pending: Implement OTP verification logic
-    console.log("OTP verification:", formData);
-  };
-
-  const getRoleDescription = (type: UserType) => {
-    switch (type) {
-      case "tenant":
-        return "I want to rent a property";
-      case "supervisor":
-        return "I manage properties for landlords";
-      case "landlord":
-        return "I own properties";
-      default:
-        return "";
-    }
-  };
+  const steps = [
+    { label: "Account Details", icon: UserIcon },
+    { label: "Select Role", icon: ClipboardDocumentCheckIcon },
+    { label: "Verify OTP", icon: ShieldCheckIcon },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -85,72 +86,25 @@ function Signup() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <Card className="w-full">
           <CardBody>
-            {step === "userType" && (
-              <div className="space-y-6">
-                <Typography variant="h5" color="blue-gray" className="mb-4">
-                  Select your role
+            {/* Stepper */}
+            <Stepper activeStep={activeStep} className="w-full">
+              {steps.map((step, index) => (
+                <Step
+                  key={index}
+                  completed={activeStep > index}
+                  icon={<step.icon className="h-5 w-5" />}
+                >
+                  <step.icon className="h-4 w-4" />
+                </Step>
+              ))}
+            </Stepper>
+
+            {/* Step 1: Account Details */}
+            {activeStep === 0 && (
+              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                <Typography variant="h5" color="blue-gray">
+                  Account Details
                 </Typography>
-                <div className="grid gap-4">
-                  {(["tenant", "supervisor", "landlord"] as UserType[]).map(
-                    (type) => (
-                      <div
-                        key={type}
-                        className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                          userType === type
-                            ? "border-blue-500 bg-blue-50"
-                            : "border-gray-200 hover:border-blue-300"
-                        }`}
-                        onClick={() => handleUserTypeSelect(type)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <Typography
-                              color="blue-gray"
-                              className="font-medium"
-                            >
-                              {type.charAt(0).toUpperCase() + type.slice(1)}
-                            </Typography>
-                            <Typography variant="small" color="gray">
-                              {getRoleDescription(type)}
-                            </Typography>
-                          </div>
-                          <Radio
-                            name="userType"
-                            value={type}
-                            checked={userType === type}
-                            onChange={() => handleUserTypeSelect(type)}
-                          />
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
-            )}
-
-            {step === "details" && (
-              <form className="space-y-6" onSubmit={handleDetailsSubmit}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Typography variant="h5" color="blue-gray">
-                      Account Details
-                    </Typography>
-                    <Typography variant="small" color="gray">
-                      {userType
-                        ? userType.charAt(0).toUpperCase() + userType.slice(1)
-                        : ""}{" "}
-                      Account
-                    </Typography>
-                  </div>
-                  <Button
-                    variant="text"
-                    onClick={() => setStep("userType")}
-                    className="text-blue-600"
-                  >
-                    Change Role
-                  </Button>
-                </div>
-
                 <div className="space-y-4">
                   <Input
                     type="text"
@@ -210,42 +164,101 @@ function Signup() {
                     required
                   />
                 </div>
-
-                <Button type="submit" fullWidth>
-                  Continue
-                </Button>
-              </form>
-            )}
-
-            {step === "otp" && (
-              <form className="space-y-6" onSubmit={handleOTPSubmit}>
-                <div className="flex items-center justify-between">
-                  <Typography variant="h5" color="blue-gray">
-                    Verify Your Mobile
-                  </Typography>
+                <div className="flex justify-between">
                   <Button
                     variant="text"
-                    onClick={() => setStep("details")}
-                    className="text-blue-600"
+                    disabled
+                    className="text-gray-400 cursor-not-allowed"
                   >
                     Back
                   </Button>
+                  <Button onClick={handleNext}>Next</Button>
                 </div>
-                <Input
-                  type="text"
-                  label="Enter OTP"
-                  value={formData.otp}
-                  onChange={(e) =>
-                    setFormData({ ...formData, otp: e.target.value })
-                  }
-                  required
-                />
-                <Typography variant="small" color="gray" className="mt-2">
-                  We've sent a verification code to your mobile number
+              </form>
+            )}
+
+            {/* Step 2: Role Selection */}
+            {activeStep === 1 && (
+              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                <Typography variant="h5" color="blue-gray">
+                  Select Your Role
                 </Typography>
-                <Button type="submit" fullWidth>
-                  Verify & Create Account
-                </Button>
+                <div className="grid gap-4">
+                  {(["tenant", "supervisor", "landlord"] as UserType[]).map(
+                    (type) => (
+                      <div
+                        key={type}
+                        className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                          userType === type
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 hover:border-blue-300"
+                        }`}
+                        onClick={() => handleUserTypeSelect(type)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <Typography
+                              color="blue-gray"
+                              className="font-medium"
+                            >
+                              {type.charAt(0).toUpperCase() + type.slice(1)}
+                            </Typography>
+                            <Typography variant="small" color="gray">
+                              {type === "tenant"
+                                ? "I want to rent a property"
+                                : type === "supervisor"
+                                ? "I manage properties for landlords"
+                                : "I own properties"}
+                            </Typography>
+                          </div>
+                          <Radio
+                            name="userType"
+                            value={type}
+                            checked={userType === type}
+                            onChange={() => handleUserTypeSelect(type)}
+                          />
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+                <div className="flex justify-between">
+                  <Button variant="text" onClick={handleBack}>
+                    Back
+                  </Button>
+                  <Button onClick={handleNext} disabled={!userType}>
+                    Next
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {/* Step 3: OTP Verification */}
+            {activeStep === 2 && (
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                <Typography variant="h5" color="blue-gray">
+                  Verify OTP
+                </Typography>
+                <Typography variant="small" color="gray">
+                  An OTP has been sent to your mobile number.
+                </Typography>
+                <div className="space-y-4">
+                  <Input
+                    type="text"
+                    label="Enter OTP"
+                    value={formData.otp}
+                    onChange={(e) =>
+                      setFormData({ ...formData, otp: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="flex justify-between">
+                  <Button variant="text" onClick={handleBack}>
+                    Back
+                  </Button>
+                  <Button type="submit">Submit</Button>
+                </div>
               </form>
             )}
           </CardBody>
