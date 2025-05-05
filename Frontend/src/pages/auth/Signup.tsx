@@ -16,7 +16,8 @@ function Signup() {
   const [step, setStep] = useState<"userType" | "details" | "otp">("userType");
   const [userType, setUserType] = useState<UserType | null>(null);
   const [formData, setFormData] = useState({
-    username: "",
+    firstName: "",
+    lastName: "",
     mobile: "",
     email: "",
     password: "",
@@ -153,10 +154,19 @@ function Signup() {
                 <div className="space-y-4">
                   <Input
                     type="text"
-                    label="Username"
-                    value={formData.username}
+                    label="First Name"
+                    value={formData.firstName}
                     onChange={(e) =>
-                      setFormData({ ...formData, username: e.target.value })
+                      setFormData({ ...formData, firstName: e.target.value })
+                    }
+                    required
+                  />
+                  <Input
+                    type="text"
+                    label="Last Name"
+                    value={formData.lastName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, lastName: e.target.value })
                     }
                     required
                   />
