@@ -51,11 +51,10 @@ function Signup() {
   };
 
   const steps = [
-    { label: "Account Details", icon: UserIcon },
-    { label: "Select Role", icon: ClipboardDocumentCheckIcon },
+    { label: "Account Details", icon: ClipboardDocumentCheckIcon },
+    { label: "Select Role", icon: UserIcon },
     { label: "Verify OTP", icon: ShieldCheckIcon },
   ];
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
