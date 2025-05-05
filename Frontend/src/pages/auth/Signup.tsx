@@ -125,14 +125,13 @@ function Signup() {
                 <Step
                   key={index}
                   completed={activeStep > index}
-                  icon={<step.icon className="h-5 w-5" />}
+                  className="h-8 w-8"
                 >
                   <step.icon className="h-4 w-4" />
                 </Step>
               ))}
             </Stepper>
 
-            {/* Step 1: Account Details */}
             {activeStep === 0 && (
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <Typography variant="h5" color="blue-gray">
@@ -216,7 +215,6 @@ function Signup() {
               </form>
             )}
 
-            {/* Step 2: Role Selection */}
             {activeStep === 1 && (
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <Typography variant="h5" color="blue-gray">
@@ -272,7 +270,6 @@ function Signup() {
               </form>
             )}
 
-            {/* Step 3: OTP Verification */}
             {activeStep === 2 && (
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <Typography variant="h5" color="blue-gray">
