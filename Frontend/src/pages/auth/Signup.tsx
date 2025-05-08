@@ -16,6 +16,7 @@ import {
   ShieldCheckIcon,
   BuildingOffice2Icon,
 } from "@heroicons/react/24/solid";
+import OTPWidget from "../../components/OTPWidget"; // Import the OTPWidget component
 
 type UserType = "tenant" | "supervisor" | "landlord";
 
@@ -49,6 +50,7 @@ function Signup() {
       email: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email),
       password: formData.password.trim() === "",
       confirmPassword: formData.confirmPassword !== formData.password,
+      otp: false, // Default value for otp
     };
     setErrors(newErrors);
     return !Object.values(newErrors).some((error) => error);
@@ -56,6 +58,12 @@ function Signup() {
 
   const validateStep3 = () => {
     const newErrors = {
+      firstName: false, // Default values for other fields
+      lastName: false,
+      mobile: false,
+      email: false,
+      password: false,
+      confirmPassword: false,
       otp: formData.otp.trim() === "",
     };
     setErrors(newErrors);
@@ -74,6 +82,10 @@ function Signup() {
 
   const handleUserTypeSelect = (type: UserType) => {
     setUserType(type);
+  };
+
+  const handleOtpChange = (otp: string) => {
+    setFormData({ ...formData, otp });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -134,6 +146,7 @@ function Signup() {
 
             {activeStep === 0 && (
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                {/* Account Details Form */}
                 <Typography variant="h5" color="blue-gray">
                   Account Details
                 </Typography>
@@ -217,6 +230,7 @@ function Signup() {
 
             {activeStep === 1 && (
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                {/* Role Selection Form */}
                 <Typography variant="h5" color="blue-gray">
                   Select Your Role
                 </Typography>
@@ -279,22 +293,26 @@ function Signup() {
                   An OTP has been sent to your mobile number.
                 </Typography>
                 <div className="space-y-4">
-                  <Input
-                    type="text"
-                    label="Enter OTP"
-                    value={formData.otp}
-                    error={errors.otp}
-                    onChange={(e) =>
-                      setFormData({ ...formData, otp: e.target.value })
-                    }
-                    required
+                  <OTPWidget
+                    length={4}
+                    onChange={handleOtpChange}
+                    error={errors.otp} // Pass the error state
+                    errorMessage="Please enter a valid OTP." // Custom error message
+                    onResend={() => {
+                      console.log("OTP resent"); // Replace with actual resend logic
+                    }}
                   />
                 </div>
                 <div className="flex justify-between">
                   <Button variant="text" onClick={handleBack}>
                     Back
                   </Button>
-                  <Button type="submit">Submit</Button>
+                  <Button
+                    type="submit"
+                    className="bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    Submit
+                  </Button>
                 </div>
               </form>
             )}
