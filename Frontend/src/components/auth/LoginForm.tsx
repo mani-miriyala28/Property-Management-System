@@ -70,15 +70,15 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-6">
+    <form onSubmit={handleLogin} className="space-y-4">
       <Typography
         variant="h4"
         color="blue-gray"
-        className="text-center font-heading font-semibold"
+        className="text-start font-heading font-semibold"
       >
         Sign in
       </Typography>
-      <div className="space-y-4">
+      <div className="space-y-3">
         <Input
           type="tel"
           value={mobileNumber}
@@ -89,7 +89,7 @@ const LoginForm: React.FC = () => {
             dispatch({ type: "AUTH_CLEAR_ERROR" });
           }}
           placeholder="Mobile Number"
-          className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+          className="!border !border-gray-300 bg-white text-gray-900 shadow-sm shadow-gray-900/5 ring-2 ring-blue-100 placeholder:text-gray-500 placeholder:opacity-100 focus:!border-blue-300 focus:ring-blue-300"
           labelProps={{
             className: "hidden",
           }}
@@ -105,7 +105,7 @@ const LoginForm: React.FC = () => {
           }}
           required
           placeholder="Password"
-          className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+          className="!border !border-gray-300 bg-white text-gray-900 shadow-sm shadow-gray-900/5 ring-2 ring-blue-100 placeholder:text-gray-500 placeholder:opacity-100 focus:!border-blue-300 focus:ring-blue-300"
           labelProps={{
             className: "hidden",
           }}
@@ -120,8 +120,9 @@ const LoginForm: React.FC = () => {
       <Button
         type="submit"
         fullWidth
+        color="amber"
         disabled={isSubmitting}
-        className="transition-all duration-200"
+        className="transition-all duration-200 normal-case text-sm rounded-full"
       >
         {isSubmitting ? "Signing in..." : "Sign in"}
       </Button>

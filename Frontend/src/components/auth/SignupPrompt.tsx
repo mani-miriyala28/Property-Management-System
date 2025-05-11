@@ -10,6 +10,11 @@ const SignupPrompt: React.FC = () => {
     dispatch({ type: "SET_AUTH_STATE", payload: "check-account" });
   };
 
+  const handleSignInWithAnother = () => {
+    dispatch({ type: "SET_MOBILE_NUMBER", payload: "" });
+    dispatch({ type: "SET_AUTH_STATE", payload: "check-account" });
+  };
+
   return (
     <div className="space-y-6">
       <Typography
@@ -43,9 +48,36 @@ const SignupPrompt: React.FC = () => {
       </div>
 
       <Link to="/signup" state={{ mobile: state.mobileNumber }}>
-        <Button className="mt-4" fullWidth>
+        <Button
+          color="amber"
+          className="mt-4 normal-case text-sm rounded-full"
+          fullWidth
+        >
           Create Account
         </Button>
+      </Link>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300"></div>
+        </div>
+        <div className="relative flex justify-center">
+          <Typography
+            variant="small"
+            color="gray"
+            className="bg-white px-2 text-center"
+          >
+            Already a customer?
+          </Typography>
+        </div>
+      </div>
+
+      <Link
+        to="/login"
+        onClick={handleSignInWithAnother}
+        className="block w-full text-center text-sm text-blue-500 hover:text-blue-700"
+      >
+        Sign in with another email or mobile
       </Link>
     </div>
   );

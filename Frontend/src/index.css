@@ -3,6 +3,5 @@
 @tailwind utilities;
 
 body {
-  background-color: #dbe8fc; /* A soft blue between Royal Blue and White */
-  color: #333333; /* Dark Gray for text */
+  background-color: #dbe8fc;
 }

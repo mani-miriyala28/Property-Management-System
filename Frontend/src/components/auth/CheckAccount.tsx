@@ -63,7 +63,7 @@ const CheckAccount: React.FC = () => {
             }}
             error={!!state.error}
             placeholder="Enter mobile number"
-            className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+            className="!border !border-gray-300 bg-white text-gray-900 shadow-sm shadow-gray-900/5 ring-2 ring-blue-100 placeholder:text-gray-500 placeholder:opacity-100 focus:!border-blue-300 focus:ring-blue-300"
             labelProps={{
               className: "hidden",
             }}
@@ -77,7 +77,12 @@ const CheckAccount: React.FC = () => {
         </div>
       </div>
 
-      <Button type="submit" fullWidth>
+      <Button
+        color="amber"
+        className="normal-case text-sm rounded-full"
+        type="submit"
+        fullWidth
+      >
         Continue
       </Button>
     </form>
