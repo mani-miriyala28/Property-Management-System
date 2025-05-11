@@ -1,6 +1,7 @@
 import React from "react";
 import { Typography, Button, Input } from "@material-tailwind/react";
 import { useAuth } from "../../contexts/AuthContext";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 const CheckAccount: React.FC = () => {
   const { state, dispatch } = useAuth();
@@ -17,11 +18,7 @@ const CheckAccount: React.FC = () => {
 
     try {
       dispatch({ type: "AUTH_LOGIN_START" });
-
-      //   // Simulating API call with a timeout
-      //   await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const userExists = false;
+      const userExists = true;
 
       if (userExists) {
         dispatch({ type: "SET_AUTH_STATE", payload: "login" });
@@ -35,7 +32,9 @@ const CheckAccount: React.FC = () => {
       });
     }
   };
-
+  const handleClear = () => {
+    dispatch({ type: "SET_MOBILE_NUMBER", payload: "" });
+  };
   return (
     <form onSubmit={handleMobileSubmit} className="space-y-6">
       <Typography
@@ -67,8 +66,17 @@ const CheckAccount: React.FC = () => {
             labelProps={{
               className: "hidden",
             }}
-            containerProps={{ className: "min-w-[100px]" }}
+            containerProps={{ className: "min-w-[100px] relative" }}
           />
+          {state.mobileNumber && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="absolute right-10 top-[51%] transform -translate-y-1/2 text-black hover:text-black"
+            >
+              <XMarkIcon className="h-5 tex w-5" /> {/* Icon with size */}
+            </button>
+          )}
           {state.error && (
             <Typography variant="small" color="red" className="text-start">
               {state.error}

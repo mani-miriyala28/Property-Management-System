@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Typography, Button, Input } from "@material-tailwind/react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
 const LoginForm: React.FC = () => {
   const { state, dispatch } = useAuth();
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [mobileNumber, setMobileNumber] = useState(state.mobileNumber || ""); // Pre-fill with state.mobileNumber
   const [password, setPassword] = useState("");
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,8 +24,6 @@ const LoginForm: React.FC = () => {
     return true;
   };
 
-  console.log("=================");
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -32,41 +31,18 @@ const LoginForm: React.FC = () => {
       return;
     }
 
-    // Set submitting state before API call
     setIsSubmitting(true);
     dispatch({ type: "AUTH_LOGIN_START" });
 
-    // try {
-    //   // TODO: Replace with your actual API endpoint
-    //   const response = await fetch("/api/auth/login", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       mobileNumber,
-    //       password,
-    //     }),
-    //   });
-
-    //   if (!response.ok) {
-    //     throw new Error("Login failed");
-    //   }
-
-    //   const userData = await response.json();
-    //   dispatch({ type: "AUTH_LOGIN_SUCCESS", payload: userData });
-
-    //   // Keep the button in loading state for a moment after success
-    //   await new Promise((resolve) => setTimeout(resolve, 500));
-    // } catch (error) {
-    //   dispatch({
-    //     type: "AUTH_LOGIN_FAILURE",
-    //     payload: error instanceof Error ? error.message : "An error occurred",
-    //   });
-    // } finally {
+    // Simulate API call
+    // setTimeout(() => {
     //   setIsSubmitting(false);
-    //   dispatch({ type: "AUTH_CLEAR_ERROR" });
-    // }
+    //   dispatch({ type: "AUTH_LOGIN_SUCCESS" });
+    // }, 1000);
+  };
+
+  const handleChangeMobile = () => {
+    dispatch({ type: "SET_AUTH_STATE", payload: "check-account" });
   };
 
   return (
@@ -78,45 +54,53 @@ const LoginForm: React.FC = () => {
       >
         Sign in
       </Typography>
-      <div className="space-y-3">
-        <Input
-          type="tel"
-          value={mobileNumber}
-          onChange={(e) => {
-            const value = e.target.value.replace(/\D/g, "").slice(0, 10);
-            setMobileNumber(value);
-            setFormError("");
-            dispatch({ type: "AUTH_CLEAR_ERROR" });
-          }}
-          placeholder="Mobile Number"
-          className="!border !border-gray-300 bg-white text-gray-900 shadow-sm shadow-gray-900/5 ring-2 ring-blue-100 placeholder:text-gray-500 placeholder:opacity-100 focus:!border-blue-300 focus:ring-blue-300"
-          labelProps={{
-            className: "hidden",
-          }}
-          containerProps={{ className: "min-w-[100px]" }}
-        />
-        <Input
-          type="password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            setFormError("");
-            dispatch({ type: "AUTH_CLEAR_ERROR" });
-          }}
-          required
-          placeholder="Password"
-          className="!border !border-gray-300 bg-white text-gray-900 shadow-sm shadow-gray-900/5 ring-2 ring-blue-100 placeholder:text-gray-500 placeholder:opacity-100 focus:!border-blue-300 focus:ring-blue-300"
-          labelProps={{
-            className: "hidden",
-          }}
-          containerProps={{ className: "min-w-[100px]" }}
-        />
+
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <Typography variant="h6" color="blue-gray" className="font-medium">
+            {mobileNumber}
+          </Typography>
+          <Link
+            to="/login"
+            onClick={handleChangeMobile}
+            className="text-sm text-blue-500 hover:text-blue-700"
+          >
+            Change
+          </Link>
+        </div>
+        <div className="space-y-1">
+          <Typography
+            variant="h6"
+            color="blue-gray"
+            className="text-start font-heading font-medium"
+          >
+            Password
+          </Typography>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setFormError("");
+              dispatch({ type: "AUTH_CLEAR_ERROR" });
+            }}
+            required
+            placeholder="Password"
+            className="!border !border-gray-300 bg-white text-gray-900 shadow-sm shadow-gray-900/5 ring-2 ring-blue-100 placeholder:text-gray-500 placeholder:opacity-100 focus:!border-blue-300 focus:ring-blue-300"
+            labelProps={{
+              className: "hidden",
+            }}
+            containerProps={{ className: "min-w-[100px]" }}
+          />
+        </div>
+
+        {(state.error || formError) && (
+          <Typography color="red" className="text-sm">
+            {formError || state.error}
+          </Typography>
+        )}
       </div>
-      {(state.error || formError) && (
-        <Typography color="red" className="text-sm">
-          {formError || state.error}
-        </Typography>
-      )}
+
       <Button
         type="submit"
         fullWidth
